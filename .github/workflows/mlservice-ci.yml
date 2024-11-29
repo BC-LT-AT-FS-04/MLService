@@ -2,8 +2,9 @@ name: MLService CI
 
 on:
     push:
-        - feature/add-github-action
-        - main
+        branches:
+            - feature/add-github-action
+            - main
 
 jobs:
     build:
