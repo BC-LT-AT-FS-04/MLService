@@ -1,0 +1,13 @@
+name: MLService CI
+
+on:
+    push:
+        - feature/add-github-action
+        - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Hello
+              run: echo "Hello World!"
