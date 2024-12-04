@@ -1,0 +1,64 @@
+name: CI Static Code Analysis
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Docker Compose
+        run: sudo apt-get install docker-compose
+
+      - name: Start MLService with Docker-Compose
+        run: docker-compose up -d
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-cache
+          restore-keys: ${{ runner.os }}-sonar-cache
+
+      - name: Run SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=MLService \
+            -Dsonar.projectName="MLService" \
+            -Dsonar.host.url=https://sonarqube.at04.devops.jala.university \
+            -Dsonar.login=$SONAR_TOKEN
+
+      - name: Stop MLService
+        run: docker-compose down
+
+      - name: Quality Gate
+        id: sonarqube
+        uses: sonarsource/sonarqube-quality-gate-action@v2.0.1
+        with:
+          host-url: https://sonarqube.at04.devops.jala.university
+          project-key: MLService
+          auth: ${{ secrets.SONAR_TOKEN }}
