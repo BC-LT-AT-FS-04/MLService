@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
@@ -31,7 +31,7 @@ jobs:
       run: |
         curl -o file.zip https://mediaops-public.s3.us-east-1.amazonaws.com/at-bootcamp/testsimages.zip
 
-    - name: Descomprimir ZIP
+    - name: Unzip ZIP
       run: |
         mkdir -p uploads/Filexample/
         unzip -j file.zip "testsimages/*" -d uploads/Filexample/
