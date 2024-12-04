@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -26,11 +26,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r requirements.txt
     
+    - name: Download ZIP
+      run: |
+        curl -o file.zip https://mediaops-public.s3.us-east-1.amazonaws.com/at-bootcamp/testsimages.zip
+
+    - name: Descomprimir ZIP
+      run: |
+        mkdir -p uploads/Filexample/
+        unzip -j file.zip "testsimages/*" -d uploads/Filexample/
+
+    - name: Verify folder content
+      run: |
+        ls -la uploads/Filexample/
+
     - name: Run unit tests
       run: |
         python -m pytest 
 
     - name: Check code coverage
       run: |
-        coverage run -m pytest 
+        coverage run -m pytest
+        coverage report
 
