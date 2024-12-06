@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  sonarqube-static-code-analysis:
     runs-on: ubuntu-22.04
 
     steps:
@@ -35,7 +35,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_URL: ${{vars.SONAR_HOST_URL}}
-        with:
-          host-url: $SONAR_URL
-          project-key: MLService
-          auth: $SONAR_TOKEN
+        # with:
+        #   host-url: $SONAR_URL
+        #   project-key: MLService
+        #   auth: $SONAR_TOKEN
