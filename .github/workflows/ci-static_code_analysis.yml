@@ -22,7 +22,7 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@v4.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_URL: ${{vars.SONAR_HOST_URL}}
+          SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
         with:
           projectBaseDir: .
           args: >
@@ -34,8 +34,8 @@ jobs:
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_URL: ${{vars.SONAR_HOST_URL}}
+          SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
         # with:
-        #   host-url: $SONAR_URL
+        #   host-url: $SONAR_HOST_URL
         #   project-key: MLService
         #   auth: $SONAR_TOKEN
