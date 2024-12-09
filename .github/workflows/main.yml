@@ -29,7 +29,7 @@ jobs:
     
     - name: Download ZIP
       run: |
-        curl -o file.zip https://mediaops-public.s3.us-east-1.amazonaws.com/at-bootcamp/testsimages.zip
+        curl -o file.zip https://nexus.at04.devops.jala.university/repository/at-raw/MLService/MLService.zip
 
     - name: Unzip ZIP
       run: |
