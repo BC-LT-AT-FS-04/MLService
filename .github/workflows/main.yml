@@ -87,21 +87,17 @@ jobs:
       - name: Build docker image
         run: docker compose build 
       
-      - name: Checl SSL Certificate
-        run: curl -v $CONTAINER_REGISTRY_URL
-
       - name: Add docker daemon file
         run: |
           echo '{ "insecure-registries": ["'"$CONTAINER_REGISTRY_URL"'"] }' | sudo tee /etc/docker/daemon.json
-          sudo systemctl restart docker
 
-      - name:
+      - name: Restart docker service
         run: systemctl restart docker
 
       - name: LogIn to Nexus Container Registry
         run: echo $CONTAINER_REGISTRY_PASSWORD | docker login $CONTAINER_REGISTRY_URL -u $CONTAINER_REGISTRY_USER --password-stdin
 
-      - name:
+      - name: Push docker image
         run: |
           docker tag mlservice-api $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
           docker push $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
