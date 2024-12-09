@@ -29,7 +29,8 @@ jobs:
     
     - name: Download ZIP
       run: |
-        curl -o file.zip https://nexus.at04.devops.jala.university/repository/at-raw/MLService/MLService.zip
+        curl -u ${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }} \
+        -o file.zip https://nexus.at04.devops.jala.university/repository/at-raw/MLService/MLService.zip
 
     - name: Unzip ZIP
       run: |
