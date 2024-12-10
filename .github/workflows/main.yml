@@ -42,9 +42,7 @@ jobs:
 
     - name: Run unit tests and check code coverage
       run: |
-        python3 -m pytest --cov=models/Recognizer --cov-report=term tests/models_tests/ 
-        python3 -m pytest --cov=routes --cov-report=term tests/routes_tests/
-        python3 -m pytest --cov=utils --cov-report=term tests/utils_tests/ 
+        python3 -m pytest --cov=models/Recognizer --cov=routes --cov=utils --cov-report=term --cov-report=xml tests/models_tests/ tests/routes_tests/ tests/utils_tests/
 
   sonarqube-static-code-analysis:
     runs-on: ubuntu-22.04
