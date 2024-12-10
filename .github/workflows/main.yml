@@ -86,7 +86,8 @@ jobs:
 
       - name: Build docker image
         run: docker compose build 
-      
+        
+
       - name: Add docker daemon file
         run: |
           echo '{ "insecure-registries": ["'"$CONTAINER_REGISTRY_URL"'"] }' | sudo tee /etc/docker/daemon.json
