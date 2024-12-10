@@ -46,37 +46,26 @@ jobs:
 
     - name: Run unit tests and check code coverage
       run: |
-        python3 -m pytest --cov=models/Recognizer --cov-report=term tests/models_tests/ 
-        python3 -m pytest --cov=routes --cov-report=term tests/routes_tests/
-        python3 -m pytest --cov=utils --cov-report=term tests/utils_tests/ 
+        python3 -m pytest --cov=models/Recognizer --cov=routes --cov=utils --cov-report=term --cov-report=xml tests/models_tests/ tests/routes_tests/ tests/utils_tests/
 
-  sonarqube-static-code-analysis:
-    runs-on: ubuntu-22.04
+    - name: Run SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@v4.1.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
+      with:
+        projectBaseDir: .
+        args: >
+          -Dsonar.projectKey=MLService
+          -Dsonar.python.coverage.reportPaths=coverage.xml
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v4.1.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=MLService
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-
-      - name: Quality Gate
-        id: sonarqube
-        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
-      
+    - name: Quality Gate
+      id: sonarqube
+      uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
+  
   build_push_image:
     runs-on: ubuntu-latest
 
@@ -86,17 +75,17 @@ jobs:
 
       - name: Build docker image
         run: docker compose build 
-
+      
       - name: Add docker daemon file
         run: |
-          echo '{"insecure-registries": ["$CONTAINER_REGISTRY_URL"]}' | sudo tee /etc/docker/daemon.json
+          echo '{ "insecure-registries": ["'"$CONTAINER_REGISTRY_URL"'"] }' | sudo tee /etc/docker/daemon.json
           sudo cat /etc/docker/daemon.json
           sudo systemctl restart docker
 
       - name: LogIn to Nexus Container Registry
         run: echo $CONTAINER_REGISTRY_PASSWORD | docker login $CONTAINER_REGISTRY_URL -u $CONTAINER_REGISTRY_USER --password-stdin
 
-      - name: Push docker image
+      - name: Push Docker Image
         run: |
-          docker tag mlservice-api $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number }}
-          docker push $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number }}
+          docker tag mlservice-api $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
+          docker push $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
