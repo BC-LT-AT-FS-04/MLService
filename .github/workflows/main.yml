@@ -28,8 +28,8 @@ jobs:
         pip install pytest-cov
 
     - name: Download ZIP
-      run: |
-        curl -H "Authorization: Bearer ${{ secrets.NEXUS_TOKEN }}" \
+      run: | 
+        curl -u ${{ vars.CONTAINER_REGISTRY_USER }}:${{ secrets.CONTAINER_REGISTRY_PASSWORD }} \
         -o file.zip https://nexus.at04.devops.jala.university/repository/at-raw/MLService/MLService.zip
 
 
