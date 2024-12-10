@@ -26,11 +26,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r requirements.txt
         pip install pytest-cov
-    
+
     - name: Download ZIP
       run: |
-        curl -u ${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }} \
+        curl -H "Authorization: Bearer ${{ secrets.NEXUS_TOKEN }}" \
         -o file.zip https://nexus.at04.devops.jala.university/repository/at-raw/MLService/MLService.zip
+
 
     - name: Unzip ZIP
       run: |
