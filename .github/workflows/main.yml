@@ -90,9 +90,7 @@ jobs:
       - name: Add docker daemon file
         run: |
           echo '{ "insecure-registries": ["'"$CONTAINER_REGISTRY_URL"'"] }' | sudo tee /etc/docker/daemon.json
-
-      - name: Restart docker service
-        run: systemctl restart docker
+          run: systemctl restart docker
 
       - name: LogIn to Nexus Container Registry
         run: echo $CONTAINER_REGISTRY_PASSWORD | docker login $CONTAINER_REGISTRY_URL -u $CONTAINER_REGISTRY_USER --password-stdin
