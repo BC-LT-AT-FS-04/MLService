@@ -84,19 +84,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Add user to Docker group
+        run: |
+          sudo usermod -aG docker $USER
+          newgrp docker <<EOF
+          echo "Switched to Docker group"
+          EOF
+
       - name: Build docker image
         run: docker compose build 
-        
 
       - name: Add docker daemon file
         run: |
           echo '{ "insecure-registries": ["'"$CONTAINER_REGISTRY_URL"'"] }' | sudo tee /etc/docker/daemon.json
-          systemctl restart docker
+          sudo systemctl restart docker
 
       - name: LogIn to Nexus Container Registry
         run: echo $CONTAINER_REGISTRY_PASSWORD | docker login $CONTAINER_REGISTRY_URL -u $CONTAINER_REGISTRY_USER --password-stdin
 
       - name: Push docker image
         run: |
-          docker tag mlservice-api $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
-          docker push $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
+          docker tag mlservice-api $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number }}
+          docker push $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number }}
