@@ -44,29 +44,20 @@ jobs:
       run: |
         python3 -m pytest --cov=models/Recognizer --cov=routes --cov=utils --cov-report=term --cov-report=xml tests/models_tests/ tests/routes_tests/ tests/utils_tests/
 
-  sonarqube-static-code-analysis:
-    runs-on: ubuntu-22.04
+    - name: Run SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@v4.1.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
+      with:
+        projectBaseDir: .
+        args: >
+          -Dsonar.projectKey=MLService
+          -Dsonar.python.coverage.reportPaths=coverage.xml
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v4.1.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=MLService
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-
-      - name: Quality Gate
-        id: sonarqube
-        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
+    - name: Quality Gate
+      id: sonarqube
+      uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
