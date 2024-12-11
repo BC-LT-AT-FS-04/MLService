@@ -26,10 +26,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install --no-cache-dir -r requirements.txt
         pip install pytest-cov
-    
+
     - name: Download ZIP
-      run: |
-        curl -o file.zip https://mediaops-public.s3.us-east-1.amazonaws.com/at-bootcamp/testsimages.zip
+      run: | 
+        curl -v -u "${{ vars.CONTAINER_REGISTRY_USER }}:${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" -o file.zip http://nexus.at04.devops.jala.university/repository/at-raw/MLService/MLService.zip
 
     - name: Unzip ZIP
       run: |
