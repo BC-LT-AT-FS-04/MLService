@@ -80,7 +80,7 @@ jobs:
           sudo systemctl restart docker
 
       - name: Login to nexus container registry
-        run: echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | sudo docker login ${{ vars.CONTAINER_REGISTRY_URL }} -u ${{ vars.CONTAINER_REGISTRY_USER }} --password-stdin 
+        run: echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | sudo docker login 'registry.at04.devops.jala.university' -u ${{ vars.CONTAINER_REGISTRY_USER }} --password-stdin 
 
       - name: Push Docker Image
         run: |
