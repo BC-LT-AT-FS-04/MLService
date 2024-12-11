@@ -75,14 +75,14 @@ jobs:
       
       - name: Add docker daemon file
         run: |
-          echo '{"insecure-registries": ["registry.at04.devops.jala.university"]}' | sudo tee /etc/docker/daemon.json
+          echo '{"insecure-registries": ["${{ vars.CONTAINER_REGISTRY_URL }}"]}' | sudo tee /etc/docker/daemon.json
           sudo cat /etc/docker/daemon.json
           sudo systemctl restart docker
 
       - name: Login to nexus container registry
-        run: echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | sudo docker login 'registry.at04.devops.jala.university' -u ${{ vars.CONTAINER_REGISTRY_USER }} --password-stdin 
+        run: echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | sudo docker login ${{ vars.CONTAINER_REGISTRY_URL }} -u ${{ vars.CONTAINER_REGISTRY_USER }} --password-stdin 
 
       - name: Push Docker Image
         run: |
-          docker tag mlservice-api 'registry.at04.devops.jala.university'/api-ml:${{ github.run_number}}
-          docker push 'registry.at04.devops.jala.university'/api-ml:${{ github.run_number}}
+          docker tag mlservice-api ${{ vars.CONTAINER_REGISTRY_URL }}/api-ml:${{ github.run_number}}
+          docker push ${{ vars.CONTAINER_REGISTRY_URL }}/api-ml:${{ github.run_number}}
