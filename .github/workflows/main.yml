@@ -77,9 +77,7 @@ jobs:
         run: |
           echo '{"insecure-registries": ["${{ vars.CONTAINER_REGISTRY_URL }}"]}' | sudo tee /etc/docker/daemon.json
           sudo cat /etc/docker/daemon.json
-
-      - name: Restart docker service
-        run: sudo systemctl restart docker
+          sudo systemctl restart docker
 
       - name: Login to nexus container registry
         run: echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | sudo docker login ${{ vars.CONTAINER_REGISTRY_URL }} -u ${{ vars.CONTAINER_REGISTRY_USER }} --password-stdin 
