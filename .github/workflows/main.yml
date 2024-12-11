@@ -73,7 +73,7 @@ jobs:
       - name: Build docker image
         run: docker compose build 
 
-       - name: List Docker images
+      - name: List Docker images
         run: docker images
       
       - name: Add docker daemon file
