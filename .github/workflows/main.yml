@@ -84,5 +84,5 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker tag mlservice-rest-api${{ vars.CONTAINER_REGISTRY_URL }}/mlservice:${{ github.run_number}}
-          docker push ${{ vars.CONTAINER_REGISTRY_URL }}/mlservice:${{ github.run_number}}
+          sudo docker tag mlservice-rest-api ${{ vars.CONTAINER_REGISTRY_URL }}/mlservice:${{ github.run_number }}
+          sudo docker push ${{ vars.CONTAINER_REGISTRY_URL }}/mlservice:${{ github.run_number }}
