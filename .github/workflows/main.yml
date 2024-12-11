@@ -7,11 +7,7 @@ on:
   push:
     branches:
       - main
-env:
-  CONTAINER_REGISTRY_URL: "${{ vars.CONTAINER_REGISTRY_URL }}"
-  CONTAINER_REGISTRY_USER: "${{ vars.CONTAINER_REGISTRY_USER }}"
-  CONTAINER_REGISTRY_PASSWORD: "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}"
-
+      
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -69,6 +65,7 @@ jobs:
   build_push_image:
     runs-on: ubuntu-latest
     needs: test
+    if: ${{ github.event_name == 'push' }}
 
     steps:
       - name: Checkout code
@@ -79,14 +76,16 @@ jobs:
       
       - name: Add docker daemon file
         run: |
-          echo '{"insecure-registries": ["registry.at04.devops.jala.university"]}' | sudo tee /etc/docker/daemon.json
+          echo '{"insecure-registries": ["${{ vars.CONTAINER_REGISTRY_URL }}"]}' | sudo tee /etc/docker/daemon.json
           sudo cat /etc/docker/daemon.json
-          sudo systemctl restart docker
 
-      - name: LogIn to Nexus Container Registry
-        run: echo $CONTAINER_REGISTRY_PASSWORD | docker login $CONTAINER_REGISTRY_URL -u $CONTAINER_REGISTRY_USER --password-stdin
+      - name: Restart docker service
+        run: sudo systemctl restart docker
+
+      - name: Login to nexus container registry
+        run: echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | sudo docker login ${{ vars.CONTAINER_REGISTRY_URL }} -u ${{ vars.CONTAINER_REGISTRY_USER }} --password-stdin 
 
       - name: Push Docker Image
         run: |
-          docker tag mlservice-api $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
-          docker push $CONTAINER_REGISTRY_URL/api-ml:${{ github.run_number}}
+          docker tag mlservice-api ${{ vars.CONTAINER_REGISTRY_URL }}/api-ml:${{ github.run_number}}
+          docker push ${{ vars.CONTAINER_REGISTRY_URL }}/api-ml:${{ github.run_number}}
