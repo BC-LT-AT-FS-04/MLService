@@ -48,11 +48,10 @@ jobs:
       uses: sonarsource/sonarqube-scan-action@v4.1.0
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: http://sonarqube.at04.devops.jala.university
+        SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
       with:
         projectBaseDir: .
         args: >
-          -X
           -Dsonar.projectKey=MLService
           -Dsonar.python.coverage.reportPaths=coverage.xml
 
@@ -61,7 +60,7 @@ jobs:
       uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: http://sonarqube.at04.devops.jala.university
+        SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
   
   build_push_image:
     runs-on: ubuntu-latest
