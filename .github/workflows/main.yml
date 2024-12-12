@@ -52,6 +52,7 @@ jobs:
       with:
         projectBaseDir: .
         args: >
+          -X
           -Dsonar.projectKey=MLService
           -Dsonar.python.coverage.reportPaths=coverage.xml
 
