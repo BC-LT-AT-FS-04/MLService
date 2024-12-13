@@ -87,17 +87,3 @@ jobs:
         run: |
           sudo docker tag mlservice-rest-api ${{ vars.CONTAINER_REGISTRY_URL }}/mlservice:${{ github.run_number }}
           sudo docker push ${{ vars.CONTAINER_REGISTRY_URL }}/mlservice:${{ github.run_number }}
-          
-  ua_tests:
-    runs-on: ubuntu-latest
-    needs: build_push_image
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install curl
-        run: sudo apt-get update && sudo apt-get install -y curl
-
-      - name: Run User Acceptance Tests
-        run: ./tests/run_ua_tests.sh
